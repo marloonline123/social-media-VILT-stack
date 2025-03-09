@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+ 
+*::-webkit-scrollbar-thumb {
+  background: #666;
+  border-radius: 20px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #ddd;
+  border-radius: 20px;
+}
+
+* {
+  font-family: "IBM Plex Sans Arabic", serif;
+  /* font-weight: 300; */
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.fade-enter-active, .fade-leave-active {
+    @apply transition-opacity ease-in-out duration-300;
+}
+
+.fade-enter-from, .fade-leave-to {
+    @apply opacity-0;
+}
+
+.fade-enter-to, .fade-leave-from {
+    @apply opacity-100;
+}
+
+.side-enter-active, .side-leave-active {
+    @apply transition-all ease-in-out duration-300;
+}
+
+html[dir="rtl"] .side-enter-from, html[dir="rtl"] .side-leave-to {
+    @apply opacity-0 translate-x-[300px];
+}
+
+html[dir="ltr"] .side-enter-from, html[dir="ltr"] .side-leave-to {
+    @apply opacity-0 -translate-x-[300px];
+}
+
+.side-enter-to, .side-leave-from {
+    @apply opacity-100 translate-x-0;
+}
+
