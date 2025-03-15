@@ -64,11 +64,11 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import Card from "@/Components/Card.vue";
 import { Head, Link, usePage } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
-import AboutTap from "@/Components/Sections/ProfileTaps/AboutTap.vue";
-import PostsTap from "@/Components/Sections/ProfileTaps/PostsTap.vue";
-import FollowersTap from "@/Components/Sections/ProfileTaps/FollowersTap.vue";
-import FollowingTap from "@/Components/Sections/ProfileTaps/FollowingTap.vue";
-import PhotosTap from "@/Components/Sections/ProfileTaps/PhotosTap.vue";
+import AboutTap from "@/Pages/Profile/Partials/ProfileTaps/AboutTap.vue";
+import PostsTap from "@/Pages/Profile/Partials/ProfileTaps/PostsTap.vue";
+import FollowersTap from "@/Pages/Profile/Partials/ProfileTaps/FollowersTap.vue";
+import FollowingTap from "@/Pages/Profile/Partials/ProfileTaps/FollowingTap.vue";
+import PhotosTap from "@/Pages/Profile/Partials/ProfileTaps/PhotosTap.vue";
 
 const { user } = defineProps({
   user: {

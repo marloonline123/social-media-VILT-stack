@@ -36,7 +36,7 @@ import { onBeforeUnmount, ref, shallowRef } from 'vue';
 import AttachmentsPreview from './Attachments/AttachmentsPreview.vue';
 
 
-const emit = defineEmits(['update:body', 'update:attachments']);
+const emit = defineEmits(['update:body', 'update:attachments', 'removeAttachment']);
 
 const props = defineProps({
     modalOpened: {
@@ -59,16 +59,25 @@ const editorConfig = { placeholder: 'Type Something here...', innerHeight: 300 }
 const editorRef = shallowRef(null);
 const editorContainer = ref(null);
 
+console.log('ready Attachments', props.attachments);
+
+
 const handleFileUpload = (event) => {
-    uploadedAttachments.value.push(...event)
+    uploadedAttachments.value.push(...event);
     console.log('uploadedAttachments', uploadedAttachments.value);
     
     emit('update:attachments', uploadedAttachments.value);
 };
 
-const handleRemoveAttachment = (event) => {
-    uploadedAttachments.value = event;
-    emit('update:attachments', event);
+const handleRemoveAttachment = (removedAttachment) => {
+    if (!removedAttachment.id) {
+        uploadedAttachments.value = uploadedAttachments.value.filter((attch) => attch !== removedAttachment);
+        console.log('removed uploadedAttachments', removedAttachment);
+    } else {
+        console.log('removed ready Attachments', removedAttachment);
+        emit('removeAttachment', removedAttachment);
+    }
+    
 };
 
 const handleCreated = (editor) => {
@@ -114,11 +123,13 @@ const processFiles = (files) => {
         file.preview = URL.createObjectURL(file);
         uploadedAttachments.value.push(file);
     });
-    console.log("Dropped Attachments updated:", uploadedAttachments.value);
     
     emit('update:attachments', uploadedAttachments.value);
 };
 
 
-onBeforeUnmount(destroyEditor);
+onBeforeUnmount(() => {
+    uploadedAttachments.value = [];
+    destroyEditor();
+});
 </script>

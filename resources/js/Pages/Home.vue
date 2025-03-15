@@ -24,7 +24,6 @@ import MiddleColumn from '@/Components/MainSections/MiddleColumn.vue';
 import RightColumn from '@/Components/MainSections/RightColumn.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { provide } from 'vue';
 
 const props = defineProps({
     posts: {
@@ -32,7 +31,5 @@ const props = defineProps({
         required: true
     }
 })
-
-console.log('posts', props.posts);
 
 </script>

@@ -16,6 +16,9 @@ use Inertia\Inertia;
 //         'phpVersion' => PHP_VERSION,
 //     ]);
 // });
+Route::get('/info', function () {
+    return phpinfo();
+});
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 

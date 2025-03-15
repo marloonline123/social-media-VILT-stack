@@ -1,7 +1,7 @@
 import '../css/app.css';
 import './bootstrap';
 
-import { createInertiaApp } from '@inertiajs/vue3';
+import { createInertiaApp, router } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
@@ -9,6 +9,7 @@ import { createI18n } from 'vue-i18n';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import relativeTime from "dayjs/plugin/relativeTime";
+import { useToast } from './Utl/useToast';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -33,6 +34,7 @@ createInertiaApp({
             `./Pages/${name}.vue`,
             import.meta.glob('./Pages/**/*.vue'),
         ),
+
     setup({ el, App, props, plugin }) {
         axios.get(`/localization?locale=${defaultLocale}`).then((response) => {
             i18n.global.setLocaleMessage(
@@ -51,4 +53,11 @@ createInertiaApp({
     progress: {
         color: '#4B5563',
     },
+});
+
+router.on("error", (event) => {
+    if (event.status === 403) {
+        const toast = useToast();
+        toast.showToast('You are not authorized to perform this action.', 'error');
+    }
 });

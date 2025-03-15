@@ -6,8 +6,8 @@
         </DropdownButton>
 
         <Modal :show="modalOpened" @close="closeModal" :title="$t('Create Post')">
-            <EditorComponent @update:body="updateBody" @update:attachments="updateAttachments"
-                :modalOpened="modalOpened" :body="form.body" :attachments="post.attachments" />
+            <EditorComponent v-if="modalOpened" @update:body="updateBody" @update:attachments="updateAttachments"
+                :modalOpened="modalOpened" @removeAttachment="handleRemoveAttachment" :body="form.body" :attachments="attachments" />
 
             <template #footer>
                 <div class="flex gap-2">
@@ -18,36 +18,16 @@
                 </div>
             </template>
         </Modal>
-
-        <!-- Edit Post Modal -->
-        <!-- <Modal :show="modalOpened" @close="closeEditor" :title="$t('Edit Post')">
-            <form @submit.prevent="updatePost">
-                <div>
-                    <div>
-                        <Editor v-if="modalOpened" ref="editorContainer"
-                            style="height: 200px; overflow-y: hidden; background-color: transparent" v-model="form.body"
-                            :defaultConfig="editorConfig" mode="default" @onCreated="handleCreated" />
-                    </div>
-                </div>
-            </form>
-
-            <template #footer>
-                <PrimaryButton @click="updatePost" :disabled="form.processing" class="text-lg" icon="fa-regular fa-paper-plane">
-                    {{ $t('Save') }}
-                </PrimaryButton>
-            </template>
-        </Modal> -->
     </div>
 </template>
 
 <script setup>
 import '@wangeditor/editor/dist/css/style.css';
-import { ref, shallowRef, nextTick, onBeforeUnmount } from 'vue';
+import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import PrimaryButton from '../PrimaryButton.vue';
 import { useToast } from '@/Utl/useToast';
 import { useI18n } from 'vue-i18n';
-import { Editor } from '@wangeditor/editor-for-vue';
 import Modal from '../Modal/Modal.vue';
 import DropdownButton from '../DropdownButton.vue';
 import EditorComponent from './EditorComponent.vue';
@@ -59,9 +39,12 @@ const props = defineProps({
     },
 });
 
+const attachments = ref(props.post.attachments);
+
 const form = useForm({
     body: props.post.body ?? '',
     attachments: [],
+    removedAttachments: [],
     _method: 'put',
 });
 
@@ -70,13 +53,18 @@ const { t } = useI18n();
 const modalOpened = ref(false);
 
 const updateBody = (body) => {
-    console.log("Body updated:", body);
     form.body = body;
 }
 
 const updateAttachments = (attachments) => {
-    console.log("Attachments updated:", attachments);
     form.attachments = attachments;
+}
+
+const handleRemoveAttachment = (removedAttachment) => {
+    if (removedAttachment.id) {
+        attachments.value = attachments.value.filter((attch) => attch !== removedAttachment);
+        form.removedAttachments.push(removedAttachment);
+    }
 }
 
 const openModal = () => {
@@ -90,6 +78,7 @@ const closeModal = () => {
 const updatePost = () => {
     form.post(route('posts.update', props.post.id), {
         onSuccess: () => {
+            form.reset();
             closeModal();
             showToast(t('Post updated successfully'));
         },

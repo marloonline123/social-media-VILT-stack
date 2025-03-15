@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Storage;
 
 class BaseModel extends Model
 {
-    public static function uploadFile($file, $path, $disk = 'public')
+    public static function generateRandomCharachters($prefix, $length = 14)
     {
-        return Storage::disk($disk)->putFile($path, $file);
+        return $prefix . strtoupper(substr(bin2hex(random_bytes(8)), 0, $length));
     }
 }

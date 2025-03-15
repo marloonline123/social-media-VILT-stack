@@ -17,6 +17,7 @@ class PostAttachmentResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'path' => $this->path,
             'preview' => url('/storage\/') . $this->path,
             'mime' => $this->mime,
             'type' => $this->mime,

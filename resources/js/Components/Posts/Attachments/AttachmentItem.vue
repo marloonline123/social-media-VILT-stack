@@ -2,7 +2,7 @@
     <div>
         <div v-if="attachment.type.includes('image')"
             class="w-full border border-slate-200 relative dark:border-slate-600 rounded-md flex items-center justify-center">
-            <button @click="deleteAttachment(index)"
+            <button @click="$emit('removeAttachment', attachment)"
                 class="absolute top-2 right-2 z-20 bg-white shadow-md rounded-full w-[25px] h-[25px] grid place-items-center cursor-pointer hover:bg-slate-100 duration-150">
                 <i class="fa-solid fa-times cursor-pointer"></i>
             </button>
@@ -12,7 +12,7 @@
 
         <div v-if="attachment.type.includes('video')"
             class="w-full border relative group border-slate-200 dark:border-slate-600 rounded-md flex items-center justify-center">
-            <button @click="deleteAttachment(index)"
+            <button @click="$emit('removeAttachment', attachment)"
                 class="absolute top-2 right-2 z-20 bg-white shadow-md rounded-full w-[25px] h-[25px] grid place-items-center cursor-pointer hover:bg-slate-100 duration-150">
                 <i class="fa-solid fa-times cursor-pointer"></i>
             </button>
@@ -35,14 +35,10 @@ const props = defineProps({
     index: {
         type: Number,
         required: true
-    },
-    deleteAttachment: {
-        type: Function,
-        required: true
     }
 })
 
-console.log('prop attachment', props.attachments);
+defineEmits(['removeAttachment'])
 
 
 </script>

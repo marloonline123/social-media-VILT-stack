@@ -4,7 +4,7 @@
 
         <!-- Edit Post Modal -->
         <Modal :show="modalOpened" @close="closeModal" :title="$t('Create Post')">
-            <EditorComponent @update:body="updateBody" @update:attachments="updateAttachments" :modalOpened="modalOpened" :body="form.body" />
+            <EditorComponent  v-if="modalOpened" @update:body="updateBody" @update:attachments="updateAttachments" :modalOpened="modalOpened" :body="form.body" />
 
             <template #footer>
                 <div class="flex gap-2">
@@ -40,18 +40,17 @@ const form = useForm({
 });
 
 const updateBody = (body) => {
-    console.log("Body updated:", body);
     form.body = body;
 }
 
 const updateAttachments = (attachments) => {
-    console.log("Attachments updated:", attachments);
     form.attachments = attachments;
 }
 
 const createPost = () => {
     form.post(route('posts.store'), {
         onSuccess: () => {
+            form.reset();
             closeModal();
             showToast(t('Post Created successfully'));
         },
