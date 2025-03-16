@@ -105,19 +105,63 @@ class FileService
     /**
      * Optimize a video using FFmpeg.
      */
-    private static function optimizeVideo($file, $path, $filename, $disk)
+    private static function optimizeVideo($file, $path, $filename, $disk = 'public')
     {
-        $originalPath = Storage::disk($disk)->putFileAs($path, $file, 'original_' . $filename);
-        $optimizedFilename = 'optimized_' . $filename;
-        $optimizedPath = storage_path("app/$disk/$path/$optimizedFilename");
+        try {
+            Log::info("Starting video optimization for: $filename");
 
-        // Compress video using FFmpeg
-        $command = "ffmpeg -i " . storage_path("app/$disk/$originalPath") . " -vcodec libx264 -crf 28 -preset fast " . $optimizedPath;
-        exec($command);
+            // Ensure directory exists
+            Storage::disk($disk)->makeDirectory($path);
 
-        // Delete the original file
-        Storage::disk($disk)->delete($originalPath);
+            // Save the original video in public storage
+            $originalFilename = 'original_' . $filename;
+            $originalPath = Storage::disk($disk)->putFileAs($path, $file, $originalFilename);
+            $originalFullPath = Storage::disk($disk)->path($originalPath);
 
-        return "$path/$optimizedFilename";
+            if (!$originalPath || !Storage::disk($disk)->exists($originalPath)) {
+                Log::error("Failed to upload original video: $originalFullPath");
+                return null;
+            }
+            Log::info("Original video stored at: $originalFullPath");
+
+            // Set optimized file path
+            $optimizedFilename = pathinfo($filename, PATHINFO_FILENAME) . "_optimized.mp4";
+            $optimizedPath = Storage::disk($disk)->path("$path/$optimizedFilename");
+            Log::info("Optimized video path: $optimizedPath");
+
+            // Construct FFmpeg command
+            $command = "ffmpeg -i " . escapeshellarg($originalFullPath) .
+                " -vcodec libx264 -crf 28 -preset fast -movflags +faststart " .
+                escapeshellarg($optimizedPath);
+
+            Log::info("Executing FFmpeg command: $command");
+
+            exec($command, $output, $returnCode);
+
+            // Log FFmpeg output
+            Log::info("FFmpeg output:", $output);
+
+            if ($returnCode !== 0) {
+                Log::error("FFmpeg failed with return code: $returnCode", ['output' => $output]);
+                return null;
+            }
+
+            // Check if optimized video was created
+            if (!file_exists($optimizedPath)) {
+                Log::error("Optimized video not created: $optimizedPath");
+                return null;
+            }
+
+            Log::info("Video successfully optimized and stored at: $optimizedPath");
+
+            // Delete original video after successful optimization
+            Storage::disk($disk)->delete($originalPath);
+            Log::info("Deleted original video: $originalFullPath");
+
+            return "$path/$optimizedFilename";
+        } catch (\Exception $e) {
+            Log::error("Video optimization error: " . $e->getMessage());
+            return null;
+        }
     }
 }

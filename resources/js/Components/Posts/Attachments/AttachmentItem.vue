@@ -6,8 +6,8 @@
                 class="absolute top-2 right-2 z-20 bg-white shadow-md rounded-full w-[25px] h-[25px] grid place-items-center cursor-pointer hover:bg-slate-100 duration-150">
                 <i class="fa-solid fa-times cursor-pointer"></i>
             </button>
-            <img :src="attachment.preview" alt="Attachment Preview" class="w-full object-cover rounded-md"
-                :class="{ 'h-[180px]': attachments.length > 1, 'h-[400px]': attachments.length == 1 }" >
+            <Image :src="attachment.preview" alt="Attachment Preview" class="w-full object-cover rounded-md"
+                :class="{ 'h-[180px]': attachments.length > 1, 'h-[400px]': attachments.length == 1 }" />
         </div>
 
         <div v-if="attachment.type.includes('video')"
@@ -16,13 +16,16 @@
                 class="absolute top-2 right-2 z-20 bg-white shadow-md rounded-full w-[25px] h-[25px] grid place-items-center cursor-pointer hover:bg-slate-100 duration-150">
                 <i class="fa-solid fa-times cursor-pointer"></i>
             </button>
-            <video :src="attachment.preview" controls alt="Attachment Preview"
-                class="h-full w-full object-cover rounded-md"></video>
+            <Video :src="attachment.preview" alt="Attachment Preview" class="w-full rounded-md"
+                :class="{ 'h-[180px]': attachments.length > 1, 'h-[400px]': attachments.length == 1 }"></Video>
         </div>
     </div>
 </template>
 
 <script setup>
+import Image from '@/Components/Image.vue';
+import Video from '@/Components/Video.vue';
+
 const props = defineProps({
     attachment: {
         type: Object,
