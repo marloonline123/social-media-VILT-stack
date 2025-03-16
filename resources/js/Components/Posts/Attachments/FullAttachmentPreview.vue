@@ -15,22 +15,24 @@
             <div class="absolute z-[50] top-0 left-0 flex justify-center items-center w-full h-full">
                 <div class="relative max-w-full max-h-full flex justify-center items-center">
                     <!-- Image Preview -->
-                    <div v-if="attachments[activeAttachment] && attachments[activeAttachment].type.includes('image')"
+                    <div v-if="attachments[activeAttachment]"
                         :key="attachments[activeAttachment].id"
                         class="w-full h-[90vh] flex justify-center items-center">
-                        <img :src="attachments[activeAttachment].preview" alt="Attachment Preview"
+                        <Image v-if="attachments[activeAttachment].type.includes('image')" :src="attachments[activeAttachment].preview" alt="Attachment Preview"
                             class="max-w-full max-h-full object-contain" />
+                        <Video v-if="attachments[activeAttachment].type.includes('video')" :src="attachments[activeAttachment].preview" alt="Attachment Preview"
+                            class="max-w-full max-h-full"></Video>
                     </div>
                 </div>
             </div>
 
 
             <!-- Navigation Buttons -->
-            <div v-show="attachments.filter(attachment => attachment.type.includes('image')).length > 1">
+            <div v-show="attachments.length > 1">
                 <IconButton @click="prevBtn" icon="fa-solid fa-arrow-left"
-                    class="absolute top-1/4 md:top-1/2 left-5 transform md:-translate-y-1/2 text-xl text-white hover:text-slate-900 z-[70]" />
+                    class="absolute top-1/4 md:top-1/2 left-5 transform md:-translate-y-1/2 text-xl text-white hover:text-slate-900 dark:hover:bg-slate-200 z-[70]" />
                 <IconButton @click="nextBtn" icon="fa-solid fa-arrow-right"
-                    class="absolute top-1/4 md:top-1/2 right-5 transform md:-translate-y-1/2 text-xl text-white hover:text-slate-900 z-[70]" />
+                    class="absolute top-1/4 md:top-1/2 right-5 transform md:-translate-y-1/2 text-xl text-white hover:text-slate-900 dark:hover:bg-slate-200 z-[70]" />
             </div>
         </div>
     </div>
@@ -40,6 +42,7 @@
 <script setup>
 import IconButton from '@/Components/IconButton.vue';
 import Image from '@/Components/Image.vue';
+import Video from '@/Components/Video.vue';
 import { ref } from 'vue';
 
 const props = defineProps({

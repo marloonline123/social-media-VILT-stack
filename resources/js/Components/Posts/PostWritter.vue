@@ -12,7 +12,7 @@
                     <span class="text-xm">&gt;</span>
                 </div>
                 <Link :href="route('profile.show', post.user.username)"
-                    class="text-sm hover:text-blue-600 duration-150 hover:underline">
+                    class="text-sm hover:text-blue-600 dark:hover:text-blue-400 duration-150 hover:underline">
                 {{ post.user.name }}
                 </Link>
             </div>

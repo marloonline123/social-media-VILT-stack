@@ -1,5 +1,7 @@
 <template>
     <div>
+        <ValidationError :for="$page.props.errors[`attachments.${index}`]" />
+
         <div v-if="attachment.type.includes('image')"
             class="w-full border border-slate-200 relative dark:border-slate-600 rounded-md flex items-center justify-center">
             <button @click="$emit('removeAttachment', attachment)"
@@ -24,6 +26,7 @@
 
 <script setup>
 import Image from '@/Components/Image.vue';
+import ValidationError from '@/Components/ValidationError.vue';
 import Video from '@/Components/Video.vue';
 
 const props = defineProps({

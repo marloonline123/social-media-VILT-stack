@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Posts\PostRequest;
 use App\Models\BaseModel;
 use App\Models\Post;
 use App\Models\PostAttachment;
@@ -29,8 +30,10 @@ class PostController extends Controller
         //
     }
 
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
+        // $body = strip_tags($request->body);
+        // dd($request->all(), $body);
         Gate::authorize('create', Post::class);
         
         $post = Post::create([

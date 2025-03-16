@@ -6,8 +6,10 @@
         </DropdownButton>
 
         <Modal :show="modalOpened" @close="closeModal" :title="$t('Create Post')">
+            <ValidationError :for="form.errors.body" />
             <EditorComponent v-if="modalOpened" @update:body="updateBody" @update:attachments="updateAttachments"
-                :modalOpened="modalOpened" @removeAttachment="handleRemoveAttachment" :body="form.body" :attachments="attachments" />
+                :modalOpened="modalOpened" @removeAttachment="handleRemoveAttachment" :body="form.body"
+                :attachments="attachments" />
 
             <template #footer>
                 <div class="flex gap-2">
@@ -31,6 +33,7 @@ import { useI18n } from 'vue-i18n';
 import Modal from '../Modal/Modal.vue';
 import DropdownButton from '../DropdownButton.vue';
 import EditorComponent from './EditorComponent.vue';
+import ValidationError from '../ValidationError.vue';
 
 const props = defineProps({
     post: {

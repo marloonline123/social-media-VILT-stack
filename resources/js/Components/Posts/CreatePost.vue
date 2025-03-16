@@ -1,10 +1,12 @@
 <template>
     <div>
-        <CreatePostOverlay :openModal="openModal"/>
+        <CreatePostOverlay :openModal="openModal" />
 
         <!-- Edit Post Modal -->
         <Modal :show="modalOpened" @close="closeModal" :title="$t('Create Post')">
-            <EditorComponent  v-if="modalOpened" @update:body="updateBody" @update:attachments="updateAttachments" :modalOpened="modalOpened" :body="form.body" />
+            <ValidationError :for="form.errors.body" />
+            <EditorComponent v-if="modalOpened" @update:body="updateBody" @update:attachments="updateAttachments"
+                :modalOpened="modalOpened" :body="form.body" />
 
             <template #footer>
                 <div class="flex gap-2">
@@ -27,6 +29,7 @@ import { useI18n } from 'vue-i18n';
 import Modal from '../Modal/Modal.vue';
 import CreatePostOverlay from './CreatePostOverlay.vue';
 import EditorComponent from './EditorComponent.vue';
+import ValidationError from '../ValidationError.vue';
 
 
 
@@ -35,7 +38,7 @@ const { t } = useI18n();
 const modalOpened = ref(false);
 
 const form = useForm({
-    body: '',
+    body: "",
     attachments: [],
 });
 
