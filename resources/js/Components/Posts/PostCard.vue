@@ -12,13 +12,14 @@
     <div class="mt-5">
       
       <PostContent :post="post" />
-      <div class="mt-3 flex items-center gap-1">
-        <i class="fa-regular fa-heart"></i>
-        <span>Jhon and other 2 liked this post</span>
+      <div v-if="post.likes_count > 0" class="mt-3 flex items-center gap-1">
+        <i class="fa-solid fa-heart text-rose-600"></i>
+        <span v-if="post.likes_count == 1">{{ (post.liked ? 'You ' : 'One person') }} liked this post</span>
+        <span v-else>{{ (post.liked ? 'You and ' : '') + (post.likes_count - 1) + ((post.likes_count - 1) > 1 ? ' others' : ' person') }} liked this post</span>
       </div>
 
       <!-- Action Buttons -->
-      <PostButtonsAction />
+      <PostButtonsAction :post="post" />
     </div>
 
     <div>

@@ -1,14 +1,7 @@
 <template>
     <div class="mt-3 flex items-center justify-between border-y dark:border-slate-600 py-2">
         <!-- Like Button -->
-        <button
-            class="group text-2xl flex-1 flex items-center justify-center gap-1.5 hover:bg-slate-100 dark:hover:bg-slate-600 px-2 py-1.5 rounded-md transition-all duration-200">
-            <i class="fa-regular fa-heart py-1 transition-colors"></i>
-            <span
-                class="text-xs font-medium text-slate-600 dark:text-slate-300 group-hover:text-slate-800 dark:group-hover:text-slate-100">
-                Like
-            </span>
-        </button>
+        <LikePost :post="post" />
 
         <!-- Comment Button -->
         <button
@@ -37,3 +30,15 @@
         </button>
     </div>
 </template>
+
+<script setup>
+import LikePost from './LikePost.vue';
+
+defineProps({
+    post: {
+        type: Object,
+        required: true,
+    },
+});
+
+</script>

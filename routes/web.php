@@ -29,6 +29,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::post('posts/{post}/like', [PostController::class, 'likePost'])->name('posts.like');
 Route::resource('posts', PostController::class);
 Route::get('/profile/{username}', [ProfileController::class, 'show'])->name('profile.show');
 

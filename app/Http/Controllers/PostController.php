@@ -72,6 +72,22 @@ class PostController extends Controller
         return back();
     }
 
+    public function likePost(Post $post) {
+        Gate::authorize('like', $post);
+
+        if ($post->likes()->where('user_id', Auth::id())->exists()) {
+            $post->likes()->where('user_id', Auth::id())->delete();
+            return response()->json(['liked' => false]);
+        }
+        $post->likes()->create([
+            'user_id' => Auth::id(),
+        ]);
+
+        
+
+        return response()->json(['liked' => false]);
+    }
+
     public function destroy(string $id)
     {
         Post::destroy($id);

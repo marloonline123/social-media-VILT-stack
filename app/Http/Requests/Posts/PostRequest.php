@@ -49,7 +49,6 @@ class PostRequest extends FormRequest
                 },
             ],
             'attachments' => ['nullable', 'array'],
-            // 'removedAttachments' => ['nullable', 'array'],
             'attachments.*' => [
                 function ($attribute, $value, $fail) {
                     if ($value instanceof UploadedFile) {

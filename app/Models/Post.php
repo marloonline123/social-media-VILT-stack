@@ -24,4 +24,8 @@ class Post extends Model
     public function attachments() : HasMany {
         return $this->hasMany(PostAttachment::class);
     }
+
+    public function likes() : HasMany {
+        return $this->hasMany(LikePost::class, 'post_id');
+    }
 }
