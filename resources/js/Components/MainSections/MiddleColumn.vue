@@ -1,8 +1,14 @@
 <template>
   <div class="">
     <div>
-      <div class="mb-4">
+      <div class="mb-3">
         <CreatePost />
+      </div>
+
+      <div class="mb-3">
+        <Transition name="fade">
+          <UploadingPost />
+        </Transition>
       </div>
 
       <div>
@@ -18,6 +24,7 @@
 import StoriesSection from "../Sections/StoriesSection.vue";
 import PostsSection from "../Posts/PostsSection.vue";
 import CreatePost from "../Posts/CreatePost.vue";
+import UploadingPost from "../Posts/UploadingPost.vue";
 
 const props = defineProps({
   posts: {

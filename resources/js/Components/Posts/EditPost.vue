@@ -6,7 +6,7 @@
         </DropdownButton>
 
         <Modal :show="modalOpened" @close="closeModal" :title="$t('Create Post')">
-            <ValidationError :for="form.errors.body" />
+            <ValidationError :for="errors.body" class="mx-1" />
             <EditorComponent v-if="modalOpened" @update:body="updateBody" @update:attachments="updateAttachments"
                 :modalOpened="modalOpened" @removeAttachment="handleRemoveAttachment" :body="form.body"
                 :attachments="attachments" />
@@ -34,6 +34,9 @@ import Modal from '../Modal/Modal.vue';
 import DropdownButton from '../DropdownButton.vue';
 import EditorComponent from './EditorComponent.vue';
 import ValidationError from '../ValidationError.vue';
+import useTextValidation from '@/Composables/useTextValidation';
+import useAttachmentValidation from '@/Composables/useAttachmentValidation';
+import { useStore } from 'vuex';
 
 const props = defineProps({
     post: {
@@ -42,7 +45,10 @@ const props = defineProps({
     },
 });
 
+const emit = defineEmits(['close-dropdown']);
+
 const attachments = ref(props.post.attachments);
+const store = useStore();
 
 const form = useForm({
     body: props.post.body ?? '',
@@ -54,6 +60,13 @@ const form = useForm({
 const { showToast } = useToast();
 const { t } = useI18n();
 const modalOpened = ref(false);
+const errors = ref({
+    body: "",
+    attachments: [],
+});
+
+const { validateData } = useTextValidation(errors, form);
+const { validateAttachments } = useAttachmentValidation(errors);
 
 const updateBody = (body) => {
     form.body = body;
@@ -75,17 +88,16 @@ const openModal = () => {
 }
 
 const closeModal = () => {
+    form.reset();
+    emit('close-dropdown');
     modalOpened.value = false;
 };
 
 const updatePost = () => {
-    form.post(route('posts.update', props.post.id), {
-        onSuccess: () => {
-            form.reset();
-            closeModal();
-            showToast(t('Post updated successfully'));
-        },
-        preserveScroll: true,
-    });
+    if (!validateData()) return false;
+    if (!validateAttachments(form.attachments)) return false;
+    
+    store.dispatch("Upload/updatePost", { body: form.body, attachments: form.attachments, removedAttachments: form.removedAttachments, postId: props.post.id });
+    closeModal();
 };
 </script>

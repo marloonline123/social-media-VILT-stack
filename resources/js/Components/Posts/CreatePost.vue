@@ -1,16 +1,14 @@
 <template>
     <div>
         <CreatePostOverlay :openModal="openModal" />
-
-        <!-- Edit Post Modal -->
         <Modal :show="modalOpened" @close="closeModal" :title="$t('Create Post')">
-            <ValidationError :for="form.errors.body" />
+            <ValidationError :for="errors.body" class="mx-1" />
             <EditorComponent v-if="modalOpened" @update:body="updateBody" @update:attachments="updateAttachments"
                 :modalOpened="modalOpened" :body="form.body" />
 
             <template #footer>
                 <div class="flex gap-2">
-                    <PrimaryButton @click="createPost" :disabled="form.processing" class="text-lg"
+                    <PrimaryButton @click="createPost" :disabled="form.processing || uploading" class="text-lg"
                         icon="fa-regular fa-paper-plane">
                         {{ $t('Save') }}
                     </PrimaryButton>
@@ -30,11 +28,15 @@ import Modal from '../Modal/Modal.vue';
 import CreatePostOverlay from './CreatePostOverlay.vue';
 import EditorComponent from './EditorComponent.vue';
 import ValidationError from '../ValidationError.vue';
-
-
+import { useUploadPost } from '@/Composables/useUploadPost';
+import { useStore } from 'vuex';
+import useTextValidation from '@/Composables/useTextValidation';
+import useAttachmentValidation from '@/Composables/useAttachmentValidation';
 
 const { showToast } = useToast();
 const { t } = useI18n();
+const { uploadPost } = useUploadPost();
+
 const modalOpened = ref(false);
 
 const form = useForm({
@@ -42,32 +44,44 @@ const form = useForm({
     attachments: [],
 });
 
+const errors = ref({
+    body: "",
+    attachments: [],
+});
+const store = useStore();
+const uploading = ref(false);
+const uploadProgress = ref([]);
+
 const updateBody = (body) => {
     form.body = body;
-}
+};
 
 const updateAttachments = (attachments) => {
-    form.attachments = attachments;
-}
+    form.attachments = attachments || []; 
+    uploadProgress.value = [];
+};
+
+const { validateData } = useTextValidation(errors, form);
+const { validateAttachments } = useAttachmentValidation(errors);
 
 const createPost = () => {
-    form.post(route('posts.store'), {
-        onSuccess: () => {
-            form.reset();
-            closeModal();
-            showToast(t('Post Created successfully'));
-        },
-        preserveScroll: true,
-    });
+    if (!validateData()) return false;
+    if (!validateAttachments(form.attachments)) return false;
+    store.dispatch("Upload/uploadPost", { body: form.body, attachments: form.attachments });
+    closeModal();
 };
+
 
 const openModal = () => {
     modalOpened.value = true;
-}
-
-const closeModal = () => {
-    modalOpened.value = false;
 };
 
-
+const closeModal = () => {
+    form.reset();
+    errors.value = {
+        body: "",
+        attachments: [],
+    };
+    modalOpened.value = false;
+};
 </script>

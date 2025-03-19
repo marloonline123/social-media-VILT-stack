@@ -9,10 +9,9 @@
         </span>
       </template>
 
-      <template #content>
-        <!-- <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink> -->
-        <EditPost :post="post" />
-        <DeletePost :post="post" />
+      <template #content="{ close }">
+        <EditPost @close-dropdown="close" :post="post" />
+        <DeletePost @close-dropdown="close" :post="post" />
         <DropdownLink :href="route('logout')" icon="fa-solid fa-eye">
           View
         </DropdownLink>
@@ -23,7 +22,6 @@
 
 <script setup>
 import Dropdown from "../Dropdown.vue";
-import DropdownButton from "../DropdownButton.vue";
 import DropdownLink from "../DropdownLink.vue";
 import IconButton from "../IconButton.vue";
 import DeletePost from "./DeletePost.vue";
@@ -35,6 +33,4 @@ const props = defineProps({
     required: true,
   },
 });
-
-
 </script>

@@ -4,7 +4,7 @@
             <div class="mt-4 px-3 grid grid-cols-1 gap-2" :class="{ 'grid-cols-2': allAttachments.length > 1 }"
                 v-if="allAttachments.length > 0">
                 
-                <AttachmentItem v-for="(attachment, index) in allAttachments" :attachment="attachment" :attachments="allAttachments" :index="index" @removeAttachment="$emit('removeAttachment', attachment)" :key="index" />
+                <AttachmentItem :attatchmentsErrors="attatchmentsErrors" v-for="(attachment, index) in allAttachments" :attachment="attachment" :attachments="allAttachments" :index="index" @removeAttachment="$emit('removeAttachment', attachment)" :key="index" />
             </div>
 
             <div class="absolute top-2 right-5">
@@ -28,6 +28,10 @@ const props = defineProps({
         default: []
     },
     uploadedAttachments: {
+        type: Array,
+        default: []
+    },
+    attatchmentsErrors: {
         type: Array,
         default: []
     }

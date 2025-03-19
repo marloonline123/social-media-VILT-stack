@@ -1,5 +1,5 @@
 <template>
-    <video :src="src" :controls="controls"></video>
+    <video :src="src" :controls="controls" class="bg-black"></video>
 </template>
 
 <script setup>

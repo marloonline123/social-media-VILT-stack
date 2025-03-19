@@ -32,8 +32,6 @@ class PostController extends Controller
 
     public function store(PostRequest $request)
     {
-        // $body = strip_tags($request->body);
-        // dd($request->all(), $body);
         Gate::authorize('create', Post::class);
         
         $post = Post::create([
@@ -54,7 +52,7 @@ class PostController extends Controller
         //j
     }
 
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request, Post $post)
     {
         Gate::authorize('update', $post);
 
@@ -101,6 +99,8 @@ class PostController extends Controller
     }
 
     private function removeAttachments($attachments) {
+        $attachments = json_decode($attachments, true);
+        Log::info('Removing attachments are: ', [$attachments]);
         foreach ($attachments as $attachment) {
             Log::info('Deleting attachment', [$attachment]);
             FileService::deleteFile($attachment['path']);

@@ -21,7 +21,7 @@
                             :defaultConfig="editorConfig" mode="default" @onCreated="handleCreated" />
                     </div>
 
-                    <AttachmentsPreview @handleAttachments="handleFileUpload" @removeAttachment="handleRemoveAttachment"
+                    <AttachmentsPreview :attachmentsErrors="attatchmentsErrors" @handleAttachments="handleFileUpload" @removeAttachment="handleRemoveAttachment"
                         :attachments="attachments" :uploadedAttachments="uploadedAttachments" />
                 </div>
             </form>
@@ -34,6 +34,7 @@ import { Editor } from '@wangeditor/editor-for-vue';
 import '@wangeditor/editor/dist/css/style.css';
 import { onBeforeUnmount, ref, shallowRef } from 'vue';
 import AttachmentsPreview from './Attachments/AttachmentsPreview.vue';
+import useAttachmentValidation from '@/Composables/useAttachmentValidation';
 
 
 const emit = defineEmits(['update:body', 'update:attachments', 'removeAttachment']);
@@ -58,13 +59,16 @@ const isDragging = ref(false);
 const editorConfig = { placeholder: 'Type Something here...', innerHeight: 300 };
 const editorRef = shallowRef(null);
 const editorContainer = ref(null);
+const attatchmentsErrors = ref([]);
+const { validateAttachments } = useAttachmentValidation(attatchmentsErrors);
 
 console.log('ready Attachments', props.attachments);
 
 
 const handleFileUpload = (event) => {
     uploadedAttachments.value.push(...event);
-    console.log('uploadedAttachments', uploadedAttachments.value);
+    validateAttachments(uploadedAttachments.value);
+    console.log('attachments', uploadedAttachments.value);
     
     emit('update:attachments', uploadedAttachments.value);
 };

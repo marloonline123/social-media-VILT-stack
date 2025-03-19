@@ -10,6 +10,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useToast } from './Utl/useToast';
+import store from './Store/Index';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -47,6 +48,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(i18n)
+            .use(store)
             .mount(el);
             
     },

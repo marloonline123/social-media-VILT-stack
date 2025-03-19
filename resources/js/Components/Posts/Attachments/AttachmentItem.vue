@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ValidationError :for="$page.props.errors[`attachments.${index}`]" />
+        <ValidationError :for="attachment.error" />
 
         <div v-if="attachment.type.includes('image')"
             class="w-full border border-slate-200 relative dark:border-slate-600 rounded-md flex items-center justify-center">
@@ -41,6 +41,10 @@ const props = defineProps({
     index: {
         type: Number,
         required: true
+    },
+    attatchmentsErrors: {
+        type: Array,
+        default: []
     }
 })
 
