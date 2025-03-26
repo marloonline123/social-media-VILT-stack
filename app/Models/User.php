@@ -56,6 +56,11 @@ class User extends Authenticatable implements MustVerifyEmail, LaratrustUser
 
     public function likes(): HasMany
     {
-        return $this->hasMany(LikePost::class, 'user_id');
+        return $this->hasMany(PostLikes::class, 'user_id');
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(PostComment::class, 'user_id');
     }
 }

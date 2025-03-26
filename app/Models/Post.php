@@ -26,6 +26,11 @@ class Post extends Model
     }
 
     public function likes() : HasMany {
-        return $this->hasMany(LikePost::class, 'post_id');
+        return $this->hasMany(PostLikes::class, 'post_id');
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(PostComment::class, 'post_id')->latest()->whereNull('comment_id');
     }
 }

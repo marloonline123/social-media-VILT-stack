@@ -16,10 +16,10 @@ fetchFunction.interceptors.response.use(
         if (error.response) {
             const status = error.response.status;
 
-            if (status === 401 || status === 403) {
-                console.error("Unauthorized! Redirecting to login...");
-                router.visit("/login"); // Redirect to login page
-            }
+            // if (status === 401 || status === 403) {
+            //     console.error("Unauthorized! Redirecting to login...");
+            //     router.visit("/login"); // Redirect to login page
+            // }
 
             if (status === 500) {
                 console.error("Server error. Please try again later.");

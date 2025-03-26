@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Log;
 class HomeController extends Controller
 {
     public function index() {
-        $posts = Post::with('user', 'attachments','likes')->latest()->paginate(10);
-        Log::info('Liked post: ', [$posts]);
+        $posts = Post::with('user', 'attachments','likes', 'comments.user')->latest()->paginate(10);
+        
         return inertia('Home', [
             'posts' => PostResource::collection($posts)
         ]);

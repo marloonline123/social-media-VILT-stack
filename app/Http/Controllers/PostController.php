@@ -3,31 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Posts\PostRequest;
+use App\Http\Resources\PostResource;
 use App\Models\BaseModel;
 use App\Models\Post;
 use App\Models\PostAttachment;
 use App\Services\FileService;
-use Faker\Provider\Base;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Encoders\JpegEncoder;
-use Intervention\Image\Laravel\Facades\Image;
-use Intervention\Image\ImageManager;
-use Spatie\ImageOptimizer\OptimizerChain;
-use Spatie\ImageOptimizer\Optimizers\Gifsicle;
-use Spatie\ImageOptimizer\Optimizers\Jpegoptim;
-use Spatie\ImageOptimizer\Optimizers\Optipng;
-use Spatie\ImageOptimizer\Optimizers\Pngquant;
 
 class PostController extends Controller
 {
-    
-    public function index()
+
+    public function index(Request $request)
     {
-        //
+        $offset = $request->offset ?? 0;
+        $posts = Post::with('user', 'attachments', 'likes', 'comments.user')->latest()->take(10)->offset($offset)->get();
+        return response()->json(['posts' => PostResource::collection($posts)]);
     }
 
     public function store(PostRequest $request)
@@ -44,7 +37,7 @@ class PostController extends Controller
             $this->uploadAttachment($post, $request->attachments);
         }
 
-        return back();
+        return response()->json(['post' => new PostResource($post)]);
     }
 
     public function show(string $id)
@@ -69,7 +62,8 @@ class PostController extends Controller
         }
 
         $post->refresh();
-        return back();
+
+        return response()->json(['post' => new PostResource($post)]);
     }
 
     public function likePost(Post $post) {
@@ -83,16 +77,14 @@ class PostController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        
-
-        return response()->json(['liked' => false]);
+        return response()->json(['liked' => true]);
     }
 
     public function destroy(string $id)
     {
-        Post::destroy($id);
+        $status = Post::destroy($id);
 
-        return back();
+        return response()->json(['status' => $status]);
     }
 
     private function uploadAttachment($post, $attachments)

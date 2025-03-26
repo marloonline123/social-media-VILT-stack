@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,9 @@ Route::get('/dashboard', function () {
 
 Route::post('posts/{post}/like', [PostController::class, 'likePost'])->name('posts.like');
 Route::resource('posts', PostController::class);
+Route::post('posts/comments/{comment}/reply', [CommentController::class, 'replyComment'])->name('comments.reply');
+Route::post('posts/comments/{comment}/like', [CommentController::class, 'likeComment'])->name('comments.like');
+Route::resource('posts.comments', CommentController::class)->shallow();
 Route::get('/profile/{username}', [ProfileController::class, 'show'])->name('profile.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {

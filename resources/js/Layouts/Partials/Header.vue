@@ -11,6 +11,7 @@
       </div>
       <div class="flex items-center gap-3">
         <div v-if="$page.props.auth.user" class="flex items-center gap-3">
+          <CreateDropdown />
           <PrivateMessagesDropdown />
           <NotificationsDropDown />
           <ProfileDropdown />
@@ -43,6 +44,7 @@ import LangSwitch from "@/Components/Sections/LangSwitch.vue";
 import { Link } from "@inertiajs/vue3";
 import MobileMenu from "@/Components/Sections/MobileMenu.vue";
 import Search from "@/Components/Sections/Search.vue";
+import CreateDropdown from "@/Components/Sections/CreateDropdown.vue";
 
 const search = ref("");
 </script>

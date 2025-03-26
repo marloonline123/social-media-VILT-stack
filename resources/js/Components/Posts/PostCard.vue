@@ -23,14 +23,14 @@
     </div>
 
     <div>
-      <PostComments />
+      <PostComments :post="post" />
     </div>
   </div>
 </template>
 
 <script setup>
 import { Link } from "@inertiajs/vue3";
-import PostComments from "./PostComments.vue";
+import PostComments from "./Comments/PostComments.vue";
 import PostOptions from "./PostOptions.vue";
 import PostButtonsAction from "./PostButtonsAction.vue";
 import dayjs from "dayjs";

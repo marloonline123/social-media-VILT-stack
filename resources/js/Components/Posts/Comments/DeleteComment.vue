@@ -4,15 +4,17 @@
       $t("Delete")
     }}</DropdownButton>
 
-    <Modal :show="isDeleting" @close="isDeleting = false" :title="$t('Delete Post')">
+    <Modal :show="isDeleting" @close="closeModal" :title="$t('Delete Comment')">
       <div class="my-4 text-center">
         {{
-          $t("Are you sure you want to delete this post? This action cannot be undone.")
+          $t(
+            "Are you sure you want to delete this Comment? This action cannot be undone."
+          )
         }}
       </div>
       <template #footer>
         <PrimaryButton
-          @click="deletePost"
+          @click="deleteComment"
           :disabled="isLoading"
           class="text-lg bg-red-400 hover:bg-red-500 active:bg-red-600 focus:bg-red-500 focus:ring-red-500"
           icon="fa-regular fa-paper-plane"
@@ -25,15 +27,15 @@
 
 <script setup>
 import { ref } from "vue";
-import DropdownButton from "../DropdownButton.vue";
-import Modal from "../Modal/Modal.vue";
-import PrimaryButton from "../PrimaryButton.vue";
 import { useToast } from "@/Utl/useToast";
 import { useI18n } from "vue-i18n";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import Modal from "@/Components/Modal/Modal.vue";
+import DropdownButton from "@/Components/DropdownButton.vue";
 import { useStore } from "vuex";
 
-const { post } = defineProps({
-  post: {
+const { comment } = defineProps({
+  comment: {
     type: Object,
     required: true,
   },
@@ -42,16 +44,24 @@ const { post } = defineProps({
 const { showToast } = useToast();
 const { t } = useI18n();
 const emit = defineEmits(["close-dropdown"]);
+const store = useStore();
 const isDeleting = ref(false);
 const isLoading = ref(false);
-const store = useStore();
 
-const deletePost = async () => {
+const deleteComment = async () => {
   isLoading.value = true;
-  await store.dispatch("Posts/deletePost", post.id);
-  isDeleting.value = false;
+  await store.dispatch("Posts/deletePostComment", {
+    id: comment.id,
+    postId: comment.post.id,
+    commentId: comment.comment_id,
+  });
+  closeModal();
   isLoading.value = false;
+  showToast(t("Comment Updated successfully"));
+};
+
+const closeModal = () => {
+  isDeleting.value = false;
   emit("close-dropdown");
-  showToast(t("Post deleted successfully"));
 };
 </script>

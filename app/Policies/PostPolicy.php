@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Post;
+use App\Models\PostComment;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -38,6 +39,14 @@ class PostPolicy
     public function like(User $user, Post $post): bool
     {
         return !$user->isDisabled && !$post->isDisabled;
+    }
+
+    /**
+     * Determine whether the user can comment posts.
+     */
+    public function comment(User $user, Post $post, PostComment $comment): bool
+    {
+        return !$user->isDisabled && !$post->isDisabled && $comment->post_id === $post->id;
     }
 
     /**

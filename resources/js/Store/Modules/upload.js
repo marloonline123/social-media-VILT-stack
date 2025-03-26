@@ -60,26 +60,33 @@ export default {
                     formData.append(`attachments[${index}]`, file);
                 });
 
-                await axios.post(route("posts.store"), formData, {
-                    headers: { "Content-Type": "multipart/form-data" },
-                    onUploadProgress: (event) => {
-                        if (event.lengthComputable) {
-                            const progress = Math.round(
-                                (event.loaded * 100) / event.total
-                            );
-                            commit("UPDATE_PROGRESS", {
-                                id: uploadId,
-                                progress,
-                                name:
-                                    progress < 100
-                                        ? "Uploading..."
-                                        : "Processing...",
-                                status:
-                                    progress < 100 ? "uploading" : "processing",
-                            });
-                        }
-                    },
-                });
+                await axios
+                    .post(route("posts.store"), formData, {
+                        headers: { "Content-Type": "multipart/form-data" },
+                        onUploadProgress: (event) => {
+                            if (event.lengthComputable) {
+                                const progress = Math.round(
+                                    (event.loaded * 100) / event.total
+                                );
+                                commit("UPDATE_PROGRESS", {
+                                    id: uploadId,
+                                    progress,
+                                    name:
+                                        progress < 100
+                                            ? "Uploading..."
+                                            : "Processing...",
+                                    status:
+                                        progress < 100
+                                            ? "uploading"
+                                            : "processing",
+                                });
+                            }
+                        },
+                    })
+                    .then((response) => {
+                        console.log("the updated Post", response.data.post);
+                        this.commit("Posts/updatePost", response.data.post);
+                    });
 
                 console.log(
                     "[ACTION] uploadPost: Upload completed, attempting to remove ID=",
@@ -87,7 +94,8 @@ export default {
                 );
                 commit("REMOVE_UPLOAD", uploadId);
 
-                router.reload({ only: ["posts"] });
+                this.commit("Posts/updatePost", );
+                // router.reload({ only: ["posts"] });
             } catch (error) {
                 console.error(
                     "[ERROR] uploadPost: Upload failed for ID=",
@@ -125,9 +133,6 @@ export default {
                 formData.append("body", body);
                 formData.append("removedAttachments", JSON.stringify(removedAttachments));
                 formData.append("_method", "PUT");
-                // removedAttachments.forEach((removedAttachment, index) => {
-                //     formData.append(`removedAttachments[${index}]`, removedAttachment);
-                // });
                 attachments.forEach((file, index) => {
                     formData.append(`attachments[${index}]`, file);
                 });
@@ -151,6 +156,9 @@ export default {
                             });
                         }
                     },
+                }).then((response) => {
+                    console.log("the updated Post", response.data.post);
+                    this.commit("Posts/updatePost", response.data.post);
                 });
 
                 console.log(

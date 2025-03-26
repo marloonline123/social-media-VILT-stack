@@ -16,7 +16,7 @@
                 {{ post.user.name }}
                 </Link>
             </div>
-            <small class="text-[10px] block">{{ postDate }}</small>
+            <small class="text-[10px] block">{{ post.created_at }}</small>
         </div>
     </div>
 </template>
@@ -31,7 +31,5 @@ const { post } = defineProps({
         required: true
     }
 });
-
-const postDate = dayjs(post.created_at).fromNow();
 
 </script>
