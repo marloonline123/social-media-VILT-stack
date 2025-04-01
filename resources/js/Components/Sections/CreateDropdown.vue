@@ -10,8 +10,8 @@
         </span>
       </template>
 
-      <template #content>
-        <DropdownLink :href="route('home')">{{ $t("Create Group") }}</DropdownLink>
+      <template #content="{ close }">
+        <CreateGroupe @close-dropdown="close" />
         <DropdownLink :href="route('home')">{{ $t("Create Page") }}</DropdownLink>
       </template>
     </Dropdown>
@@ -21,5 +21,6 @@
 <script setup>
 import Dropdown from "../Dropdown.vue";
 import DropdownLink from "../DropdownLink.vue";
+import CreateGroupe from "../Groups/CreateGroupe.vue";
 import IconButton from "../IconButton.vue";
 </script>

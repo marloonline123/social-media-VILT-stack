@@ -10,6 +10,9 @@ class Post extends Model
 {
     protected $fillable = ['body', 'slug', 'user_id', 'group_id'];
 
+    protected $casts = [
+        'isDisabled' => 'boolean'
+    ];
 
     public function user() : BelongsTo
     {

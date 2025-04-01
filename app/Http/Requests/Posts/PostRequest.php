@@ -48,6 +48,7 @@ class PostRequest extends FormRequest
                     }
                 },
             ],
+            'group_id' => ['nullable', 'exists:groups,id'],
             'attachments' => ['nullable', 'array'],
             'attachments.*' => [
                 function ($attribute, $value, $fail) {

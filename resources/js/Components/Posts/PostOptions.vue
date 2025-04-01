@@ -12,7 +12,7 @@
       <template #content="{ close }">
         <EditPost @close-dropdown="close" :post="post" />
         <DeletePost @close-dropdown="close" :post="post" />
-        <DropdownLink :href="route('logout')" icon="fa-solid fa-eye">
+        <DropdownLink :href="route('posts.show', post.slug)" icon="fa-solid fa-eye">
           View
         </DropdownLink>
       </template>

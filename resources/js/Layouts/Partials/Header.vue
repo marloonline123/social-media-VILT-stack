@@ -3,7 +3,10 @@
     class="bg-white h-[70px] fixed top-0 left-0 z-50 dark:bg-slate-700 shadow-md py-3 px-5 md:px-10 w-full flex items-center justify-between gap-5"
   >
     <Link :href="route('home')">
-      <h1 class="text-4xl font-bold text-blue-500">{{ $t("Logo") }}</h1>
+      <!-- <h1 class="text-4xl font-bold text-blue-500">{{ $t("Logo") }}</h1> -->
+      <div class="">
+        <Image :src="'/images/logo.png'" class="w-[150px]" />
+      </div>
     </Link>
     <div class="flex justify-end md:justify-between items-center flex-grow">
       <div class="hidden md:block">
@@ -43,8 +46,9 @@ import ProfileDropdown from "@/Components/Sections/ProfileDropdown.vue";
 import LangSwitch from "@/Components/Sections/LangSwitch.vue";
 import { Link } from "@inertiajs/vue3";
 import MobileMenu from "@/Components/Sections/MobileMenu.vue";
-import Search from "@/Components/Sections/Search.vue";
+import Search from "@/Components/Search/Search.vue";
 import CreateDropdown from "@/Components/Sections/CreateDropdown.vue";
+import Image from "@/Components/Image.vue";
 
 const search = ref("");
 </script>

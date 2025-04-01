@@ -38,7 +38,7 @@ export default {
         },
     },
     actions: {
-        async uploadPost({ commit }, { body, attachments }) {
+        async uploadPost({ commit }, { body, attachments, group_id }) {
             if (!body && attachments.length === 0) return;
 
             const uploadId = Date.now().toString();
@@ -56,6 +56,9 @@ export default {
             try {
                 const formData = new FormData();
                 formData.append("body", body);
+                if (group_id) {
+                    formData.append("group_id", group_id);
+                }
                 attachments.forEach((file, index) => {
                     formData.append(`attachments[${index}]`, file);
                 });

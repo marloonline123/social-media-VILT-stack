@@ -23,12 +23,19 @@ class PostController extends Controller
         return response()->json(['posts' => PostResource::collection($posts)]);
     }
 
+    public function singlePost(string $slug)
+    {
+        $post = Post::with('user', 'attachments', 'likes', 'comments.user')->where('slug', $slug)->firstOrFail();
+        return response()->json(['posts' => new PostResource($post)]);
+    }
+
     public function store(PostRequest $request)
     {
         Gate::authorize('create', Post::class);
         
         $post = Post::create([
             'body' => $request->body,
+            'group_id' => $request->group_id,
             'user_id' => Auth::id(),
             'slug' => BaseModel::generateRandomCharachters('P')
         ]);
@@ -40,9 +47,11 @@ class PostController extends Controller
         return response()->json(['post' => new PostResource($post)]);
     }
 
-    public function show(string $id)
+    public function show(string $slug)
     {
-        //j
+        $post = Post::with('user', 'attachments', 'likes', 'comments.user')->where('slug', $slug)->first();
+        Gate::authorize('view', $post);
+        return inertia('PostPage', ['slug' => $slug]);
     }
 
     public function update(PostRequest $request, Post $post)
@@ -80,30 +89,31 @@ class PostController extends Controller
         return response()->json(['liked' => true]);
     }
 
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        $status = Post::destroy($id);
-
+        Gate::authorize('delete', $post);
+        $status = $post->delete();
         return response()->json(['status' => $status]);
     }
 
     private function uploadAttachment($post, $attachments)
     {
+        $data = [];
         foreach ($attachments as $attachment) {
             $file = $attachment;
             $path = FileService::uploadFile($file, 'posts/attachments', 'public', true, ['crop' => true, 'width' => 1080, 'ratioX' => 5, 'ratioY' => 3.5]);
             $filename = str_replace('posts/attachments/', '', $path);
             $mime = $file->getClientMimeType();
 
-            PostAttachment::create([
+            $data[] = [
                 'name' => $filename,
                 'post_id' => $post->id,
                 'path' => $path,
                 'mime' => $mime,
-                'type' => $mime,
                 'created_by' => Auth::id(),
-            ]);
+            ];
         }
+        PostAttachment::insert($data);
     }
 
     private function removeAttachments($attachments) {

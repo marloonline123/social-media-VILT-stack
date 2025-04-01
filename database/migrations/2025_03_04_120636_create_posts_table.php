@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('slug');
-            $table->foreignId('user_id')->index()->constrained('users');
-            $table->foreignId('group_id')->index()->nullable()->constrained('groups');
+            $table->foreignId('user_id')->index()->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('group_id')->index()->nullable()->constrained('groups')->cascadeOnDelete()->cascadeOnUpdate();
             $table->longText('body')->nullable();
             $table->boolean('isDisabled')->default(false);
-            $table->foreignId('deleted_by')->index()->nullable()->constrained('users');
+            $table->foreignId('deleted_by')->index()->nullable()->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
         });

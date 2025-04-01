@@ -26,7 +26,7 @@
 import { ref } from 'vue';
 import IconButton from '../IconButton.vue';
 import LeftColumnMenu from './LeftColumnMenu.vue';
-import Search from './Search.vue';
+import Search from '../Search/Search.vue';
 
 const menuOpened = ref(false);
 
