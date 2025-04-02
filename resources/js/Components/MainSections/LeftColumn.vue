@@ -7,7 +7,7 @@
         <LeftColumnMenu />
       </div>
       <div>
-        <PagesYouLiked />
+        <PagesYouFollowed :pages="pages" />
       </div>
     </div>
   </div>
@@ -15,5 +15,12 @@
 
 <script setup>
 import LeftColumnMenu from "../Sections/LeftColumnMenu.vue";
-import PagesYouLiked from "../Sections/PagesYouLiked.vue";
+import PagesYouFollowed from "../Pages/PagesYouFollowed.vue";
+
+defineProps({
+  pages: {
+    type: Array,
+    required: true,
+  },
+});
 </script>

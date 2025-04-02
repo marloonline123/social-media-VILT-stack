@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Posts\PostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\BaseModel;
+use App\Models\Group;
+use App\Models\Page;
 use App\Models\Post;
 use App\Models\PostAttachment;
 use App\Services\FileService;
@@ -19,23 +21,24 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $offset = $request->offset ?? 0;
-        $posts = Post::with('user', 'attachments', 'likes', 'comments.user')->latest()->take(10)->offset($offset)->get();
+        $posts = Post::with('user', 'postable', 'attachments', 'likes', 'comments.user')->active()->latest()->take(10)->offset($offset)->get();
         return response()->json(['posts' => PostResource::collection($posts)]);
     }
 
     public function singlePost(string $slug)
     {
-        $post = Post::with('user', 'attachments', 'likes', 'comments.user')->where('slug', $slug)->firstOrFail();
+        $post = Post::with('user', 'postable', 'attachments', 'likes', 'comments.user')->active()->where('slug', $slug)->firstOrFail();
         return response()->json(['posts' => new PostResource($post)]);
     }
 
     public function store(PostRequest $request)
     {
         Gate::authorize('create', Post::class);
-        
+        $postableType = $request->postable_type === 'group' ? Group::class : Page::class;
         $post = Post::create([
             'body' => $request->body,
-            'group_id' => $request->group_id,
+            'postable_id' => $request->postable_id,
+            'postable_type' => $postableType,
             'user_id' => Auth::id(),
             'slug' => BaseModel::generateRandomCharachters('P')
         ]);
@@ -49,8 +52,8 @@ class PostController extends Controller
 
     public function show(string $slug)
     {
-        $post = Post::with('user', 'attachments', 'likes', 'comments.user')->where('slug', $slug)->first();
-        Gate::authorize('view', $post);
+        $post = Post::with('user', 'postable', 'attachments', 'likes', 'comments.user')->where('slug', $slug)->first();
+        // Gate::authorize('view', $post);
         return inertia('PostPage', ['slug' => $slug]);
     }
 

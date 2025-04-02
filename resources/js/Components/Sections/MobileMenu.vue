@@ -1,33 +1,44 @@
 <template>
-    <div>
-        <IconButton @click="menuOpened = !menuOpened" icon="fa-solid fa-bars" />
+  <div>
+    <IconButton @click="menuOpened = !menuOpened" icon="fa-solid fa-bars" />
 
-        <Transition name="fade">
-            <div v-if="menuOpened" @click="menuOpened = false" class="fixed top-0 left-0 w-full h-full bg-black/50 dark:bg-slate-900/50 z-40"></div>
-        </Transition>
-        
-        <Transition name="side">
-            <div v-if="menuOpened" class="fixed top-0 right-0 ltr:left-0 w-[300px] shadow h-full bg-white dark:bg-slate-700 z-50">
-                <div class="p-3">
-                    <IconButton @click="menuOpened = !menuOpened" icon="fa-solid fa-times" />
-                </div>
-                <div class="mt-5 px-5 md:hidden">
-                    <Search />
-                </div>
-                <div class="mt-5 px-5">
-                    <LeftColumnMenu />
-                </div>
-            </div>
-        </Transition>
-    </div>
+    <Transition name="fade">
+      <div
+        v-if="menuOpened"
+        @click="menuOpened = false"
+        class="fixed top-0 left-0 w-full h-full bg-black/50 dark:bg-slate-900/50 z-40"
+      ></div>
+    </Transition>
+
+    <Transition name="side">
+      <div
+        v-if="menuOpened"
+        class="fixed top-0 right-0 ltr:left-0 w-[300px] shadow h-full bg-white dark:bg-slate-700 z-50"
+      >
+        <div class="p-3">
+          <IconButton @click="menuOpened = !menuOpened" icon="fa-solid fa-times" />
+        </div>
+        <div class="mt-5 px-5 md:hidden">
+          <div class="flex items-center gap-3">
+            <LangSwitch />
+            <IconButton @click="toggleTheme" icon="fa-solid fa-circle-half-stroke" />
+          </div>
+        </div>
+        <div class="mt-5 px-5">
+          <LeftColumnMenu />
+        </div>
+      </div>
+    </Transition>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import IconButton from '../IconButton.vue';
-import LeftColumnMenu from './LeftColumnMenu.vue';
-import Search from '../Search/Search.vue';
+import { ref } from "vue";
+import IconButton from "../IconButton.vue";
+import LeftColumnMenu from "./LeftColumnMenu.vue";
+import Search from "../Search/Search.vue";
+import { toggleTheme } from "@/theme";
+import LangSwitch from "./LangSwitch.vue";
 
 const menuOpened = ref(false);
-
 </script>

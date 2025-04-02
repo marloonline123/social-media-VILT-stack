@@ -4,7 +4,7 @@
     <div class="h-full">
       <div class="h-full flex gap-5 relative w-full">
         <div class="w-1/4 hidden lg:block">
-          <LeftColumn />
+          <LeftColumn :pages="pages" />
         </div>
         <div class="h-full w-full md:w-2/3 lg:w-2/4">
           <MiddleColumn />
@@ -34,8 +34,12 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  pages: {
+    type: Object,
+    required: true,
+  },
 });
 const groups = computed(() => props.groups.data);
 const followers = computed(() => props.followers.data);
-console.log("followers", followers.value);
+const pages = computed(() => props.pages.data);
 </script>

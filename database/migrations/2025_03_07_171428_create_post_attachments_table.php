@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('post_attachments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('post_id')->constrained('posts')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('name', 255);
-            $table->string('path', 255);
+            $table->string('name');
+            $table->string('path');
             $table->string('mime', 25);
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();

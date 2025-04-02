@@ -4,7 +4,9 @@
       <!-- Header Section -->
       <div class="text-center">
         <h3 class="text-3xl font-extrabold text-gray-800">📸 Beautiful Gallery</h3>
-        <p class="text-gray-500 mt-2">Explore this group’s stunning media collection!</p>
+        <p class="text-gray-500 mt-2">
+          Explore this {{ text }}’s stunning media collection!
+        </p>
       </div>
 
       <!-- Gallery Grid -->
@@ -21,7 +23,7 @@
           />
         </div>
         <p v-else class="text-center text-gray-500 mt-4">
-          This Group does not have any media.
+          This {{ text }} does not have any media.
         </p>
       </div>
     </section>
@@ -37,11 +39,12 @@
 
 <script setup>
 import Card from "@/Components/Card.vue";
+import GalleryCard from "@/Components/Sections/GalleryCard.vue";
 import FullAttachmentPreview from "@/Components/Posts/Attachments/FullAttachmentPreview.vue";
-import GalleryCard from "@/Pages/Profile/Partials/ProfileTaps/Partials/GalleryCard.vue";
 import { ref } from "vue";
 
 defineProps({
+  text: { type: String, required: true },
   attachments: { type: Array, required: true },
 });
 

@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('groups', function (Blueprint $table) {
+        Schema::create('pages', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug');
+            $table->string('username');
             $table->string('avatar')->nullable();
             $table->string('cover')->nullable();
-            $table->boolean('auto_approval')->default(true);
-            $table->text('about')->nullable();
+            $table->string('about')->nullable();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamp('deleted_at')->nullable();
             $table->foreignId('deleted_by')->nullable()->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('groups');
+        Schema::dropIfExists('pages');
     }
 };

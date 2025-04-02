@@ -1,7 +1,10 @@
 <template>
   <Head title="Profile" />
   <AppLayout>
-    <Card class="md:w-[90%] lg:w-[80%] mx-auto h-full overflow-hidden rounded-lg">
+    <Card
+      class="md:w-[90%] lg:w-[80%] mx-auto h-full overflow-hidden rounded-lg"
+      style="padding: 0"
+    >
       <!-- Cover & Profile Image -->
       <div class="relative">
         <div class="h-[200px] w-full">
@@ -103,11 +106,7 @@
         :user="user"
         :followings="followings"
       />
-      <GalleryTap
-        v-if="activeTap === 'gallery'"
-        :user="user"
-        :attachments="attachments"
-      />
+      <GalleryTap v-if="activeTap === 'gallery'" text="user" :attachments="attachments" />
     </div>
   </AppLayout>
 </template>
@@ -120,7 +119,7 @@ import { computed, ref } from "vue";
 import PostsTap from "@/Pages/Profile/Partials/ProfileTaps/PostsTap.vue";
 import FollowersTap from "@/Pages/Profile/Partials/ProfileTaps/FollowersTap.vue";
 import FollowingTap from "@/Pages/Profile/Partials/ProfileTaps/FollowingTap.vue";
-import GalleryTap from "@/Pages/Profile/Partials/ProfileTaps/GalleryTap.vue";
+import GalleryTap from "@/Components/Sections/GalleryTap.vue";
 import { useStore } from "vuex";
 import TapButton from "@/Components/Groups/Taps/Partials/TapButton.vue";
 import Stats from "./Partials/Stats.vue";

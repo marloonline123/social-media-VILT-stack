@@ -9,7 +9,7 @@
       >
         <img
           class="w-full h-full object-cover"
-          src="https://media.istockphoto.com/id/183412466/photo/eastern-bluebirds-male-and-female.jpg?s=612x612&w=0&k=20&c=6_EQHnGedwdjM9QTUF2c1ce7cC3XtlxvMPpU5HAouhc="
+          :src="post.user.avatar"
           alt="User avatar"
         />
       </div>

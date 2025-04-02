@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import PrimaryButton from "../PrimaryButton.vue";
 import { useToast } from "@/Utl/useToast";
@@ -42,8 +42,16 @@ import { useStore } from "vuex";
 import useTextValidation from "@/Composables/useTextValidation";
 import useAttachmentValidation from "@/Composables/useAttachmentValidation";
 
-const { group } = defineProps({
+const { group, page } = defineProps({
   group: {
+    type: Object,
+    required: false,
+  },
+  page: {
+    type: Object,
+    required: false,
+  },
+  page: {
     type: Object,
     required: false,
   },
@@ -54,9 +62,9 @@ const { t } = useI18n();
 const { uploadPost } = useUploadPost();
 
 const modalOpened = ref(false);
-
+const postable_id = computed(() => (group ? group.id : page ? page.id : null));
+const postable_type = computed(() => (group ? "group" : page ? "page" : null));
 const form = useForm({
-  group_id: group?.id ?? null,
   body: "",
   attachments: [],
 });
@@ -87,7 +95,8 @@ const createPost = () => {
   store.dispatch("Upload/uploadPost", {
     body: form.body,
     attachments: form.attachments,
-    group_id: form.group_id ?? null,
+    postable_id: postable_id.value,
+    postable_type: postable_type.value,
   });
   closeModal();
 };

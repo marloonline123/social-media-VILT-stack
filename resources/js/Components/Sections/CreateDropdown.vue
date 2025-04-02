@@ -12,7 +12,7 @@
 
       <template #content="{ close }">
         <CreateGroupe @close-dropdown="close" />
-        <DropdownLink :href="route('home')">{{ $t("Create Page") }}</DropdownLink>
+        <CreatePage @close-dropdown="close" />
       </template>
     </Dropdown>
   </div>
@@ -23,4 +23,5 @@ import Dropdown from "../Dropdown.vue";
 import DropdownLink from "../DropdownLink.vue";
 import CreateGroupe from "../Groups/CreateGroupe.vue";
 import IconButton from "../IconButton.vue";
+import CreatePage from "../Pages/CreatePage.vue";
 </script>

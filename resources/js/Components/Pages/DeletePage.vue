@@ -9,18 +9,16 @@
     </div>
 
     <div>
-      <Modal :show="isOpen" @close="closeModal" :title="$t('Delete Group')">
+      <Modal :show="isOpen" @close="closeModal" :title="$t('Delete Page')">
         <div class="my-4 text-center">
           {{
-            $t(
-              "Are you sure you want to delete this group? This action cannot be undone."
-            )
+            $t("Are you sure you want to delete this page? This action cannot be undone.")
           }}
         </div>
         <template #footer>
           <div>
             <PrimaryButton
-              @click="deleteGroup"
+              @click="deletePage"
               :disabled="form.processing"
               class="bg-red-500 hover:bg-red-600 active:bg-red-600 focus:bg-red-600 focus:ring-red-500"
             >
@@ -40,8 +38,8 @@ import { useForm } from "@inertiajs/vue3";
 import PrimaryButton from "../PrimaryButton.vue";
 import { useToast } from "@/Utl/useToast";
 
-const { group } = defineProps({
-  group: {
+const { page } = defineProps({
+  page: {
     type: Object,
     required: true,
   },
@@ -53,12 +51,12 @@ const form = useForm({
   _method: "DELETE",
 });
 
-const deleteGroup = () => {
-  form.post(route("groups.destroy", group.id), {
+const deletePage = () => {
+  form.post(route("pages.destroy", page.id), {
     preserveScroll: true,
     onSuccess: () => {
       closeModal();
-      showToast("Group Deleted successfully");
+      showToast("Page Deleted successfully");
     },
   });
 };

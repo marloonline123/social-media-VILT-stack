@@ -1,7 +1,6 @@
 <template>
-  <Head title="Group Details" />
+  <Head title="Page Details" />
   <AppLayout>
-    <AcceptInvitation :open-invitation="openInvitation" :group="group" />
     <Card
       style="padding: 0"
       class="md:w-[90%] lg:w-[80%] mx-auto h-full overflow-hidden rounded-lg"
@@ -12,7 +11,7 @@
         <div class="relative">
           <div class="h-[200px] w-full group">
             <input
-              v-if="group.is_admin"
+              v-if="page.is_admin"
               type="file"
               id="cover"
               class="hidden"
@@ -21,12 +20,12 @@
             />
             <label class="cursor-pointer" for="cover">
               <Image
-                :src="group.cover"
+                :src="page.cover"
                 class="w-full h-full object-cover"
-                alt="Group Cover Image"
+                alt="Page Cover Image"
               />
               <div
-                v-show="group.is_admin"
+                v-show="page.is_admin"
                 class="absolute cursor-pointer inset-0 bg-black/30 hidden group-hover:block transition-all duration-300"
               >
                 <div class="flex justify-center items-center w-full h-full">
@@ -36,10 +35,10 @@
             </label>
           </div>
           <div
-            class="group absolute -bottom-[50px] md:-bottom-[100px] left-8 rtl:right-8 w-[120px] h-[120px] md:w-[150px] md:h-[150px] rounded-full border-4 border-white"
+            class="group absolute -bottom-[50px] left-8 rtl:right-8 w-[120px] h-[120px] md:w-[150px] md:h-[150px] rounded-full border-4 border-white"
           >
             <input
-              v-if="group.is_admin"
+              v-if="page.is_admin"
               type="file"
               id="avatar"
               class="hidden"
@@ -49,11 +48,11 @@
             <label class="cursor-pointer" for="avatar">
               <Image
                 class="w-full h-full object-cover rounded-full"
-                :src="group.avatar"
-                alt="Group Avatar Image"
+                :src="page.avatar"
+                alt="Page Avatar Image"
               />
               <div
-                v-show="group.is_admin"
+                v-show="page.is_admin"
                 class="absolute cursor-pointer inset-0 bg-black/30 hidden group-hover:block rounded-full transition-all duration-300"
               >
                 <div class="flex justify-center items-center w-full h-full">
@@ -65,43 +64,37 @@
         </div>
 
         <div class="mt-2 flex items-center flex-wrap mx-5">
-          <div class="w-full lg:w-[calc(2rem+150px)] bg-red-200"></div>
           <div
-            class="flex flex-wrap justify-between gap-1 items-start flex-grow mt-12 md:mt-24 lg:mt-0"
+            class="flex flex-col md:flex-row justify-between gap-3 items-start flex-grow mt-12"
           >
             <div>
-              <p class="text-lg md:text-2xl font-bold">{{ group.name }}</p>
+              <p class="text-lg md:text-2xl font-bold">{{ page.name }}</p>
               <p
                 class="text-sm whitespace-pre-line mt-2 text-slate-700 dark:text-slate-200"
               >
-                {{ group.about }}
+                {{ page.about }}
               </p>
             </div>
 
-            <div class="flex flex-col gap-2">
-              <InviteMember v-if="group.is_admin" :group="group" />
-              <EditGroup
-                v-if="group.user_id === $page.props.auth?.user?.id"
-                :group="group"
-              />
-              <DeleteGroup
-                v-if="group.user_id === $page.props.auth?.user?.id"
-                :group="group"
-              />
-              <template v-if="group.user_id !== $page.props.auth?.user?.id">
-                <div v-if="!group.joined">
-                  <JoinGroup :group="group" />
+            <div>
+              <div class="flex space-x-6">
+                <div class="text-center">
+                  <p class="text-xl font-bold">{{ page.posts_count }}</p>
+                  <p class="text-sm text-gray-500">Posts</p>
                 </div>
-                <div v-else>
-                  <LeaveGroup v-if="group.status == 'approved'" :group="group" />
-                  <PrimaryButton v-else-if="group.status == 'pending'"
-                    >Your Request is Pending</PrimaryButton
-                  >
-                  <PrimaryButton v-else-if="group.status == 'declined'"
-                    >Your Request is Declined</PrimaryButton
-                  >
+                <div class="text-center">
+                  <p class="text-xl font-bold">{{ page.followers_count }}</p>
+                  <p class="text-sm text-gray-500">Followers</p>
                 </div>
-              </template>
+              </div>
+            </div>
+
+            <div class="flex md:flex-col gap-2">
+              <div v-if="page.is_admin" class="flex md:flex-col gap-2">
+                <EditPage :page="page" />
+                <DeletePage :page="page" />
+              </div>
+              <FollowUnfollowPage :page="page" />
             </div>
           </div>
         </div>
@@ -113,15 +106,12 @@
             <TapButton @click="activeTap = 'posts'" text="posts" :activeTap="activeTap">
               {{ $t("Posts") }}
             </TapButton>
-            <TapButton @click="activeTap = 'users'" text="users" :activeTap="activeTap">
-              {{ $t("Members") }}
-            </TapButton>
             <TapButton
-              v-if="group.is_admin"
-              @click="activeTap = 'pending-requests'"
-              text="pending-requests"
+              @click="activeTap = 'followers'"
+              text="followers"
               :activeTap="activeTap"
-              >{{ $t("Pending Requests") }}
+            >
+              {{ $t("Followers") }}
             </TapButton>
             <TapButton
               @click="activeTap = 'gallery'"
@@ -139,25 +129,16 @@
       style="padding: 0; background-color: transparent"
     >
       <div class="mt-2">
-        <PostsTap
-          v-if="activeTap === 'posts'"
-          :group="group"
-          :posts="posts"
-          :members="members"
-          :admins="admins"
+        <PostsTap v-if="activeTap === 'posts'" :posts="posts" :page="page" />
+        <FollowersTap
+          v-if="activeTap === 'followers'"
+          :followers="followers"
+          :page="page"
         />
-        <Users v-if="activeTap === 'users'" :group="group" :members="members" />
-        <PendingRequests
-          v-if="activeTap === 'pending-requests' && group.is_admin"
-          :group="group"
-          :requests="requests"
-        />
-        <FollowersTap v-if="activeTap === 'followers'" />
-        <FollowingTap v-if="activeTap === 'following'" />
         <GalleryTap
           v-if="activeTap === 'gallery'"
           :attachments="attachments"
-          text="group"
+          text="page"
         />
       </div>
     </Card>
@@ -167,41 +148,26 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Card from "@/Components/Card.vue";
-import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
-import { computed, onMounted, ref } from "vue";
-import FollowersTap from "@/Pages/Profile/Partials/ProfileTaps/FollowersTap.vue";
-import FollowingTap from "@/Pages/Profile/Partials/ProfileTaps/FollowingTap.vue";
+import { Head, useForm } from "@inertiajs/vue3";
+import { computed, ref } from "vue";
 import TapButton from "@/Components/Groups/Taps/Partials/TapButton.vue";
 import Image from "@/Components/Image.vue";
 import ValidationError from "@/Components/ValidationError.vue";
 import { useToast } from "@/Utl/useToast";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import InviteMember from "@/Components/Groups/InviteMember.vue";
-import AcceptInvitation from "@/Components/Groups/AcceptInvitation.vue";
-import LeaveGroup from "@/Components/Groups/LeaveGroup.vue";
-import JoinGroup from "@/Components/Groups/JoinGroup.vue";
-import Users from "@/Components/Groups/Taps/Users.vue";
-import PendingRequests from "@/Components/Groups/Taps/PendingRequests.vue";
-import PostsTap from "@/Components/Groups/Taps/PostsTap.vue";
 import { useStore } from "vuex";
-import EditGroup from "@/Components/Groups/EditGroup.vue";
-import DeleteGroup from "@/Components/Groups/DeleteGroup.vue";
+import FollowersTap from "@/Components/Pages/Taps/FollowersTap.vue";
+import PostsTap from "@/Components/Pages/Taps/PostsTap.vue";
+import EditPage from "@/Components/Pages/EditPage.vue";
+import DeletePage from "@/Components/Pages/DeletePage.vue";
 import GalleryTap from "@/Components/Sections/GalleryTap.vue";
+import FollowUnfollowPage from "@/Components/Pages/FollowUnfollowPage.vue";
 
 const props = defineProps({
-  group: {
+  page: {
     type: Object,
     required: true,
   },
-  members: {
-    type: Object,
-    required: true,
-  },
-  admins: {
-    type: Object,
-    required: true,
-  },
-  requests: {
+  followers: {
     type: Object,
     required: true,
   },
@@ -211,14 +177,11 @@ const props = defineProps({
   },
 });
 
-const group = computed(() => props.group.data);
-const members = computed(() => props.members.data);
-const requests = computed(() => props.requests.data);
-const admins = computed(() => props.admins.data);
+const page = computed(() => props.page.data);
+const followers = computed(() => props.followers.data);
 const attachments = computed(() => props.attachments.data);
 const activeTap = ref("posts");
 const { showToast } = useToast();
-const openInvitation = ref(false);
 const store = useStore();
 const form = useForm({
   avatar: null,
@@ -226,14 +189,14 @@ const form = useForm({
   _method: "PUT",
 });
 store.commit("Posts/clearPosts");
-store.dispatch("Posts/fetchGroupPosts", { id: group.value.id });
+store.dispatch("Posts/fetchPagePosts", { id: page.value.id });
 const posts = computed(() => store.state.Posts.posts);
 
 console.log("posts", posts.value);
 
 const uploadAvatar = (event) => {
   form.avatar = event.target.files[0];
-  form.post(route("groups.upload-avatar", group.value.slug), {
+  form.post(route("pages.upload-avatar", page.value.id), {
     preserveScroll: true,
     onSuccess: () => {
       form.reset();
@@ -248,7 +211,7 @@ const uploadAvatar = (event) => {
 
 const uploadCover = (event) => {
   form.cover = event.target.files[0];
-  form.post(route("groups.upload-cover", group.value.slug), {
+  form.post(route("pages.upload-cover", page.value.id), {
     preserveScroll: true,
     onSuccess: () => {
       form.reset();
@@ -260,12 +223,6 @@ const uploadCover = (event) => {
     },
   });
 };
-
-onMounted(() => {
-  if (group.value.invited) {
-    openInvitation.value = true;
-  }
-});
 </script>
 
 <style scoped>

@@ -23,6 +23,10 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  page: {
+    type: Object,
+    default: null,
+  },
 });
 
 const store = useStore();
@@ -39,6 +43,11 @@ const loadMore = async () => {
   if (props.type === "group") {
     await store.dispatch("Posts/fetchGroupPosts", {
       id: props.group.id,
+      offset: offset.value,
+    });
+  } else if (props.type === "page") {
+    await store.dispatch("Posts/fetchPagePosts", {
+      id: props.page.id,
       offset: offset.value,
     });
   } else if (props.type === "user") {

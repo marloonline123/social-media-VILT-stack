@@ -22,7 +22,8 @@ class PostPolicy
      */
     public function view(User $user, Post $post): bool
     {
-        return !$post->isDisabled;
+        // return !$post->isDisabled;
+        return true;
     }
 
     /**

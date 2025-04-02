@@ -7,13 +7,15 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocalizationController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
 use App\Models\Group;
 use App\Models\Post;
 use App\Models\User;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/email', function () { 
@@ -40,6 +42,13 @@ Route::resource('posts', PostController::class);
 Route::post('posts/comments/{comment}/reply', [CommentController::class, 'replyComment'])->name('comments.reply');
 Route::post('posts/comments/{comment}/like', [CommentController::class, 'likeComment'])->name('comments.like');
 Route::resource('posts.comments', CommentController::class)->shallow();
+
+// Pages
+Route::put('pages/{page}/upload-avatar', [PageController::class, 'uploadAvatar'])->name('pages.upload-avatar');
+Route::put('pages/{page}/upload-cover', [PageController::class, 'uploadCover'])->name('pages.upload-cover');
+Route::post('pages/{page}/follow-toggle', [PageController::class, 'followToggle'])->name('pages.follow-toggle');
+Route::get('pages/{page}/posts', [PageController::class, 'posts'])->name('pages.posts');
+Route::resource('pages', PageController::class);
 
 // Groups
 Route::put('groups/{group}/upload-avatar', [GroupController::class, 'uploadAvatar'])->name('groups.upload-avatar');

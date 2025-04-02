@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Group;
+use App\Models\Page;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -20,8 +22,9 @@ class PostResource extends JsonResource
             'id' => $this->id,
             'body' => $this->body,
             'slug' => $this->slug,
-            'user' => $this->user,
-            'group' => $this->group,
+            'user' => new UserResource($this->user),
+            'postable' => $this->postable_type == Group::class ? new GroupResource($this->postable) : ($this->postable_type == Page::class ? new PageResource($this->postable) : null),
+            'postable_type' => $this->postable_type == Group::class ? 'group' : ($this->postable_type == Page::class ? 'page' : null),
             'liked' => $this->likes()->where('user_id', Auth::id())->exists(),
             'likes_count' => $this->likes()->count(),
             'comments_count' => $this->comments()->count(),

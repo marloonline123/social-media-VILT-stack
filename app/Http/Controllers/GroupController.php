@@ -26,14 +26,14 @@ class GroupController extends Controller
     public function index(Request $request)
     {
         $offset = $request->offset ?? 0;
-        $posts = Post::with('user', 'attachments', 'likes', 'comments.user')->where('group_id', $request->group)->latest()->take(10)->offset($offset)->get();
+        $posts = Post::with('user', 'postable', 'attachments', 'likes', 'comments.user')->where('postable_type', 'App\Models\Group')->where('postable_id', $request->group_id)->latest()->take(10)->offset($offset)->get();
         return response()->json(['posts' => PostResource::collection($posts)]);
     }
 
     public function posts(Request $request, string $id)
     {
         $offset = $request->offset ?? 0;
-        $posts = Post::with('user', 'attachments', 'likes', 'comments.user')->where('group_id', $id)->latest()->take(10)->offset($offset)->get();
+        $posts = Post::with('user', 'postable', 'attachments', 'likes', 'comments.user')->where('postable_type', 'App\Models\Group')->where('postable_id', $id)->latest()->take(10)->offset($offset)->get();
         return response()->json(['posts' => PostResource::collection($posts)]);
     }
 
@@ -56,14 +56,14 @@ class GroupController extends Controller
             'user',
             'posts',
             'members',
-            'invitations'
+            'invitations',
+            'attachments',
         ])->where('slug', $slug)->firstOrFail();
 
         return inertia('GroupPage', [
             'group' => new GroupResource($group),
             'members' => GroupUserResource::collection($group->members()->approved()->get()),
             'requests' => GroupUserResource::collection($group->members()->pending()->get()),
-            'posts' => PostResource::collection($group->posts()->latest()->get()),
             'admins' => GroupUserResource::collection($group->members()->admin()->take(5)->get()),
             'attachments' => PostAttachmentResource::collection($group->attachments),
         ]);

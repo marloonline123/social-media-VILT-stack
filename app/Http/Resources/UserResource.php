@@ -23,11 +23,11 @@ class UserResource extends JsonResource
             'avatar' => $this->avatar ? asset('storage/' . $this->avatar) : asset('images/user-avatar.jpg'),
             'cover' => $this->cover_image ? asset('storage/' . $this->cover_image) : asset('images/user-cover.jpg'),
             'bio' => $this->bio,
-            'isFollowing' => $this->isFollowing(Auth::id()),
             'gender' => $this->gender,
+            'isFollowing' => $this->isFollowing(Auth::id()),
             'likes_count' => $this->likes()->count(),
-            'followers_count' => $this->followers()->count(),
             'followings_count' => $this->followings()->count(),
+            'followers_count' => $this->followers()->count(),
             'posts_count' => $this->posts()->count(),
         ];
     }

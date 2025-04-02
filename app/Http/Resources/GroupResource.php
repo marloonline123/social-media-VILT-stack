@@ -29,7 +29,7 @@ class GroupResource extends JsonResource
             'is_admin' => Auth::id() == $this->user_id || $this->members()->where('user_id', Auth::id())->where('role', 'admin')->exists() ? true : false,
             'joined' => $this->members()->where('user_id', Auth::id())->exists() ? true : false,
             'status' => $this->members()->firstWhere('user_id', Auth::id())?->status ?? null,
-            // 'user' => new UserResource($this->user),
+            'user' => new UserResource($this->user),
             'invited' => $this->invitations()->where('status', 'pending')->where('user_id', Auth::id())->exists() ? true : false,
             'created_at' => Carbon::parse($this->created_at)->diffForHumans(),
         ];

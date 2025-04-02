@@ -38,7 +38,7 @@ export default {
         },
     },
     actions: {
-        async uploadPost({ commit }, { body, attachments, group_id }) {
+        async uploadPost({ commit }, { body, attachments, postable_id, postable_type }) {
             if (!body && attachments.length === 0) return;
 
             const uploadId = Date.now().toString();
@@ -56,8 +56,9 @@ export default {
             try {
                 const formData = new FormData();
                 formData.append("body", body);
-                if (group_id) {
-                    formData.append("group_id", group_id);
+                if (postable_id && postable_type) {
+                    formData.append("postable_id", postable_id);
+                    formData.append("postable_type", postable_type);
                 }
                 attachments.forEach((file, index) => {
                     formData.append(`attachments[${index}]`, file);
